@@ -67,7 +67,8 @@ def user_posts_time_slice (k, user_name, all_posts):
         date = (post[2]).split()
         time = (int(date[5])%2011)*12
         time = time + convert_month(date[1])
-        text = clean_text(post[5])
+        content = post[5].replace(post[4],"");
+        text = clean_text(content)
         if user_name == post[0]:
             if time < start_time:
                 start_time = time

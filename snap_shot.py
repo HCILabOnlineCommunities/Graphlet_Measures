@@ -44,7 +44,8 @@ def snap_shot(csv_file) -> dict:
         date = (row[2]).split()
         time = (int(date[5])%2011)*12
         time = time + convert_month(date[1])
-        text = clean_text(row[5])
+        content = row[5].replace(row[4],"");
+        text = clean_text(content)
         if time in time_line:
             time_line[time] = time_line[time] + text
         else:
