@@ -11,14 +11,15 @@ Created on Mon Oct 23 11:45:46 2017
 @author: Ryan Compton
 """
 
-import nltk
+import nltk, string
 from nltk import word_tokenize
 from nltk import sent_tokenize
 from nltk.util import ngrams
 from collections import Counter
 import numpy as np
-import csv
-import sys
+from nltk.corpus import stopwords 
+
+remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
 
 class SLM:
     #Inputs:
@@ -105,55 +106,26 @@ class SLM:
         prototypicality = -1*entropy
         return prototypicality
 
+# cleans the text to remove punctuation, stopwords, etc
+def clean_text(text):
+    text = text.translate(remove_punctuation_map).lower()
+    stop_words = set(stopwords.words('english')) 
+    word_tokens = word_tokenize(text) 
+    filtered_sentence = [w for w in word_tokens if not w in stop_words] 
+    return filtered_sentence
+
 # takes first 30 words from text and returns them 
 def first_30(text) -> str:
-    segment = ""
-    words = text.split()
-    for i in range(0, 29):
-        segment = segment + words[i] + " "
-    segment = segment + words[29]
-    return segment
+    return (clean_text(text)[0:30])
+    
 
 
 if __name__ == "__main__":
-    #Expect first argument to sys.argv is a csv filename
-    #This csv file is expected to have headers and a column
-    #header named "text"
-    text_file = open(sys.argv[1],"rb")
-
-    all_text = ""
+    text = """Southern California friends! This Saturday, my collective Disorient
+    will be one of the sound stages at LA Decompression 2018. For my friends who 
+    aren't Burners, Decompression is this is the official "after party" for 
+    Burning Man — we come together in cities all around the world to celebrate 
+    Burning Man culture, music, art, and community. We're bringing out a premium 
+    sound system with music curated by (birthday boy!)"""
     
-    #Iterate through csv file to gather all text to build the language model
-    reader = csv.DictReader(text_file)
-    for idx,row in enumerate(reader):
-        text = str(row["text"], "latin-1").replace(u'\xa0',u'')
-        text = text = first_30(text)
-        all_text += text + " "
-            
-    #Initialize language model
-    stat_lang_model = SLM(all_text,encoding="latin-1")
-
-    #Reopen text file to find metrics for each piece of text
-    print("Iterating through text")
-    with open(sys.argv[1],"rb") as text_file:
-        reader = csv.reader(text_file)
-        #Set new file writer
-        new_file_name = sys.argv[1].split(".csv")[0] + "_StatLang_Results.csv"
-        new_file = open(new_file_name,"wb")
-        writer = csv.writer(new_file)
-        
-        for idx,row in enumerate(reader):
-            if idx < 1:
-                headers = row
-                #Append new metric columns
-                headers.append("Entropy")
-                headers.append("Prototypicality")
-                writer.writerow(headers)
-            else:
-                text = str(row[headers.index("text")], "latin-1").replace(u'\xa0',u'')
-                text = text = first_30(text)
-                row.append(stat_lang_model.entropy(text))
-                row.append(stat_lang_model.prototypicality(text))
-                writer.writerow(row)
-                
-        new_file.close()
+    print(first_30(text))

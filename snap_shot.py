@@ -13,17 +13,22 @@ Created on Mon Oct 6 11:45:46 2018
 @author: Mia Altieri
 """
 
+import string
+from nltk.corpus import stopwords 
+from nltk.tokenize import word_tokenize 
 import csv
 import sys
 
-# takes first 30 words from text and returns them 
-def first_30(text) -> str:
-    segment = ""
-    words = text.split()
-    for i in range(0, 29):
-        segment = segment + words[i] + " "
-    segment = segment + words[29]
-    return segment
+
+remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
+
+# cleans the text to remove punctuation, stopwords, etc
+def clean_text(text):
+    text = text.translate(remove_punctuation_map).lower()
+    stop_words = set(stopwords.words('english')) 
+    word_tokens = word_tokenize(text) 
+    filtered_sentence = [w for w in word_tokens if not w in stop_words] 
+    return filtered_sentence[0:30]
 
 def convert_month(month) -> int:
     months = ["Jan","Feb","Mar","Apr","May","Jun",
@@ -39,8 +44,11 @@ def snap_shot(csv_file) -> dict:
         date = (row[2]).split()
         time = (int(date[5])%2011)*12
         time = time + convert_month(date[1])
-        text = first_30(row[5])
-        time_line[time] = time_line[time] + text
+        text = clean_text(row[5])
+        if time in time_line:
+            time_line[time] = time_line[time] + text
+        else:
+            time_line[time] = text
     return time_line
 
 if __name__ == "__main__":
@@ -48,6 +56,6 @@ if __name__ == "__main__":
     #This csv file is expected to have headers and a column
     #header named "text"
     csv_file = open(sys.argv[1],"rt")
-    snap_shot(csv_file)
+    snap = snap_shot(csv_file)
 
     

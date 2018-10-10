@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Oct  6 18:48:33 2018
-
 @author: miaaltieri
-
 This script computes the similarity of two sets of text, computes both
 Jaccard Similarity and Cosine Similarity 
 """
@@ -45,7 +43,13 @@ def clean_text(text):
 
 # then puts the text into an array
 def jaccard_similarity(text1, text2):
-    return jaccard_similarity_score(clean_text(text1),clean_text(text2))
+    text1 = clean_text(text1)
+    while len(text1) < 30:
+        text1.extend([""])
+    text2 = clean_text(text2)
+    while len(text2) < 30:
+        text2.extend([""])
+    return jaccard_similarity_score(text1,text2)
 
 if __name__ == "__main__":
     #Expect first & second argument to be text with no more than 30 words
@@ -53,6 +57,4 @@ if __name__ == "__main__":
     text_file_1 = open(sys.argv[2],"rt")
     print(cosine_sim(text_file_0,text_file_1))
     jaccard_similarity(text_file_0, text_file_1)
-    
-
     
