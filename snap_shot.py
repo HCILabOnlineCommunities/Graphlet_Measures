@@ -17,8 +17,13 @@ import string
 from nltk.corpus import stopwords 
 from nltk.tokenize import word_tokenize 
 import csv
-import sys
+# import sys
+import os
+import pickle
 
+userID = "your id here"
+
+path = '/Users/userID/Research_Data/Test_Data/Comm_Test_Data'
 
 remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
 
@@ -37,7 +42,42 @@ def convert_month(month) -> int:
         if m == month:
             return i+1
 
-def snap_shot(csv_file) -> dict:
+#comm_graph.edges[edge]["post_reply_data"][list_index]["Original_text"]
+def snap_shot_graph(graphlets_path) -> dict:
+    time_line = {}
+    
+    a = [0,1,2,3,4]
+    i = 4
+    print(a[i])
+    for elem in a:
+        print(elem)
+    
+    
+    # loop through each pickle file in folder
+    for filename in os.listdir(graphlets_path):
+        print(filename)
+        #unpickle the file
+        comm_graph = None
+        with open(os.path.join(graphlets_path,filename,),"rb") as f_p:
+            comm_graph = pickle.load(f_p, encoding='latin1')
+        #loop through each edge in graph (i.e looping through edges)
+        for edge in comm_graph.edges:
+            #loop through each  post_reply pair in the edge (i.e. looping through list_index)
+            for post in comm_graph.edges[edge]["post_reply_data"]: 
+                text = post["Original_Text"]
+                date = post["Reply_Date"].split()
+                time = (int(date[5])%2011)*12
+                time = time + convert_month(date[1])
+                text = text.replace(post["Original_Title"],"");
+                text = clean_text(text)
+                if time in time_line:
+                    time_line[time] = time_line[time] + text
+                else:
+                    time_line[time] = text
+    return time_line
+
+
+def snap_shot_csv(csv_file) -> dict:
     time_line = {}
     reader = csv.reader(csv_file)
     for idx,row in enumerate(reader):
@@ -56,7 +96,17 @@ if __name__ == "__main__":
     #Expect first argument to sys.argv is a csv filename
     #This csv file is expected to have headers and a column
     #header named "text"
-    csv_file = open(sys.argv[1],"rt")
-    snap = snap_shot(csv_file)
+    #csv_file = open(sys.argv[1],"rt")
+    #snap = snap_shot_csv(csv_file)
+    
+    #Load in the graph object
+
+    snap = snap_shot_graph(path)
+    print (snap)
+    
+    #with open(os.path.join(path, "snap_shot.pickle"),'wb') as out:
+    #   pickle.dump(prog,out)
+    
+    
 
     
