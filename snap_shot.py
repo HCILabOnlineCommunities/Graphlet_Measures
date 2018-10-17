@@ -23,7 +23,7 @@ import pickle
 
 userID = "your id here"
 
-path = '/Users/userID/Research_Data/Test_Data/Comm_Test_Data'
+path = '/Users/'+userID+'/Research_Data/Test_Data/Comm_Test_Data'
 
 remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
 
@@ -44,14 +44,7 @@ def convert_month(month) -> int:
 
 #comm_graph.edges[edge]["post_reply_data"][list_index]["Original_text"]
 def snap_shot_graph(graphlets_path) -> dict:
-    time_line = {}
-    
-    a = [0,1,2,3,4]
-    i = 4
-    print(a[i])
-    for elem in a:
-        print(elem)
-    
+    time_line = {}    
     
     # loop through each pickle file in folder
     for filename in os.listdir(graphlets_path):
@@ -66,7 +59,7 @@ def snap_shot_graph(graphlets_path) -> dict:
             for post in comm_graph.edges[edge]["post_reply_data"]: 
                 text = post["Original_Text"]
                 date = post["Reply_Date"].split()
-                time = (int(date[5])%2011)*12
+                time = (int(date[5])%2009)*12
                 time = time + convert_month(date[1])
                 text = text.replace(post["Original_Title"],"");
                 text = clean_text(text)
@@ -82,7 +75,7 @@ def snap_shot_csv(csv_file) -> dict:
     reader = csv.reader(csv_file)
     for idx,row in enumerate(reader):
         date = (row[2]).split()
-        time = (int(date[5])%2011)*12
+        time = (int(date[5])%2009)*12
         time = time + convert_month(date[1])
         content = row[5].replace(row[4],"");
         text = clean_text(content)
@@ -105,7 +98,7 @@ if __name__ == "__main__":
     print (snap)
     
     #with open(os.path.join(path, "snap_shot.pickle"),'wb') as out:
-    #   pickle.dump(prog,out)
+    #   pickle.dump(snap,out)
     
     
 

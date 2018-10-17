@@ -20,8 +20,8 @@ from sklearn.metrics import jaccard_similarity_score
 
 userID = "your id here"
 
-path_graphs = '/Users/userID/Research_Data/Test_Data/Comm_Test_Data'
-path_graphlets = '/Users/userID/Research_Data/Test_Data/Four_Cliques_Test_Data'
+path_graphs = '/Users/'+userID+'/Research_Data/Test_Data/Comm_Test_Data'
+path_graphlets = '/Users/'+userID+'/Research_Data/Test_Data/Four_Cliques_Test_Data'
 path = "~/"
 stemmer = nltk.stem.porter.PorterStemmer()
 remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
@@ -58,7 +58,7 @@ def jaccard_similarity(text1, text2):
 def ling_prog (k, post_content, post_time, snap_shots) -> int:
     entropy_min = 0
     index_min = 0
-    for i in range (post_time-k-1, post_time+k+1):
+    for i in range (post_time-k, post_time+k+1):
         if i == post_time:
             continue
         if i not in snap_shots: 
@@ -147,14 +147,6 @@ def snap_shot(csv_file) -> dict:
 #comm_graph.edges[edge]["post_reply_data"][list_index]["Original_text"]
 def snap_shot_graph(graphlets_path) -> dict:
     time_line = {}
-    
-    a = [0,1,2,3,4]
-    i = 4
-    print(a[i])
-    for elem in a:
-        print(elem)
-    
-    
     # loop through each pickle file in folder
     for filename in os.listdir(graphlets_path):
         #unpickle the file
@@ -167,7 +159,7 @@ def snap_shot_graph(graphlets_path) -> dict:
             for post in comm_graph.edges[edge]["post_reply_data"]: 
                 text = post["Original_Text"]
                 date = post["Reply_Date"].split()
-                time = (int(date[5])%2011)*12
+                time = (int(date[5])%2009)*12
                 time = time + convert_month(date[1])
                 text = text.replace(post["Original_Title"],"");
                 text = clean_text(text)
