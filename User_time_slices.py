@@ -14,9 +14,7 @@ import string
 from nltk.corpus import stopwords 
 from nltk.tokenize import word_tokenize 
 
-userID = "your id here"
-
-path = '/Users/'+userID+'/Research_Data/Test_Data/Comm_Test_Data'
+path = '/Users/miaaltieri/Research_Data/Test_Data/Comm_Test_Data'
 remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
 
 # cleans the text to remove punctuation, stopwords, etc

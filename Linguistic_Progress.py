@@ -18,10 +18,8 @@ from nltk.tokenize import word_tokenize
 import pickle
 from sklearn.metrics import jaccard_similarity_score
 
-userID = "your id here"
-
-path_graphs = '/Users/'+userID+'/Research_Data/Test_Data/Comm_Test_Data'
-path_graphlets = '/Users/'+userID+'/Research_Data/Test_Data/Four_Cliques_Test_Data'
+path_graphs = '/Users/miaaltieri/Research_Data/Test_Data/Comm_Test_Data'
+path_graphlets = '/Users/miaaltieri/Research_Data/Test_Data/Four_Cliques_Test_Data'
 path = "~/"
 stemmer = nltk.stem.porter.PorterStemmer()
 remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)

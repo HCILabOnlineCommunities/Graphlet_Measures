@@ -9,6 +9,8 @@ Given a community, this python script will calculate the Linguistic Progressiven
 of a graphlet within respect to this community
 
 
+
+
 This script is meant to be run multiple times,
 i.e.  for f in *; do python Community_Ling_Prog.py f; done
 """
@@ -184,6 +186,7 @@ def progressiveness_wi_commun(k, snap_shots, comm_graph, graphlet_type,
             if (comm_graph.nodes[user])['role'] == 'owner':
                 number_of_leaders += 1
             
+        
 
         #Iterate through edges in subgraph
         for edge in subg.edges:
@@ -209,6 +212,13 @@ def progressiveness_wi_commun(k, snap_shots, comm_graph, graphlet_type,
                 graphlet_lp[graphlet_type][graphlet_count]["LP"].append(posts_lp[post_key])
                 sum_LP += posts_lp[post_key]
                 count_LP +=1
+                
+                # break on the first iteration
+                break
+        
+            # break on the first iteration
+            break
+        
         
         graphlet_lp[graphlet_type][graphlet_count]["LP_AVG"]= sum_LP/count_LP
         LP_sum = LP_sum + graphlet_lp[graphlet_type][graphlet_count]["LP_AVG"]   
@@ -220,8 +230,8 @@ def progressiveness_wi_commun(k, snap_shots, comm_graph, graphlet_type,
     
     #--------------------------------------------------------------------------
     # calculate values we will return and pickle necessary files
-    result_path = basepath + "Results/LP_Results/"+ commun + graphlet_type + "_LP"
-    result_path_leader = basepath + "Results/LP_Results/"+ commun + graphlet_type + "_leader_LP"
+    result_path = basepath + "Results/LP_Results_1st/"+ commun + graphlet_type + "_LP"
+    result_path_leader = basepath + "Results/LP_Results_1st/"+ commun + graphlet_type + "_leader_LP"
     leader_based_LP = None
     
     
@@ -263,8 +273,8 @@ if __name__ == "__main__":
     #global compute_leader 
     LP_AVG_graphlet = {}
     LP_AVG_leader = {}  
-    LP_AVG_result_path = basepath + "Results/LP_Results/LP_AVG"
-    LP_AVG_leader_result_path = basepath + "Results/LP_Results/LP_AVG_Leader"
+    LP_AVG_result_path = basepath + "Results/LP_Results_1st/LP_AVG"
+    LP_AVG_leader_result_path = basepath + "Results/LP_Results_1st/LP_AVG_Leader"
     top_commun_path = basepath+"/Results/top_100_commun"
     
     #If first arg is Leaders then compute leaders as well :)
@@ -279,7 +289,7 @@ if __name__ == "__main__":
     for commun in top_100_commun:
         print(datetime.datetime.now(),commun)
         comm_path = basepath + "Comm_Graphs/" + commun+"_graph.pickle"
-        result_path = basepath + "Results/LP_Results/"+ commun + "_LP"
+        result_path = basepath + "Results/LP_Results_1st/"+ commun + "_LP"
 
         
 #        if os.path.isfile(result_path):

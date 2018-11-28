@@ -21,9 +21,7 @@ import csv
 import os
 import pickle
 
-userID = "your id here"
-
-path = '/Users/'+userID+'/Research_Data/Test_Data/Comm_Test_Data'
+path = '/Users/miaaltieri/Research_Data/Test_Data/Comm_Test_Data'
 
 remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
 
