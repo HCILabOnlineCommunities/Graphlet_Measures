@@ -9,23 +9,18 @@ import seaborn as sns
 import numpy as np
 import pandas as pd
 import pickle
- 
+from  matplotlib.ticker import PercentFormatter
+
 
 graphlet_type = ["four_paths","four_tailedtriangles","three_stars","four_chordalcycles","four_cliques","four_cycles"]
-    
-with open(result_path,"rb") as f_p:
-    LP = pickle.load(f_p, encoding='latin1')
-    
-    
-for key in sorted(LP.items()):
-    print(key)
-print(LP)
+
+
 
 graph_as_chart = [['','four_chordalcycles', 'Distribution']]
  
-
     
 for g in graphlet_type:
+    all_count = 0
     result_path = '/Users/miaaltieri/Research_Data/Results/LP_Results/Distribution/'+g
 
     #Load in the graph object
@@ -38,24 +33,25 @@ for g in graphlet_type:
     values = []
     
     for LP, count in (LP).items():
+        all_count += count
         graph_as_chart.append(['',LP,count])
         names.append(LP)
         values.append(count)
-        print(LP, count)
         
         
     results = {}
     results[g] = names
     results['Distribution'] = values
     
-    print(results)
-    
     df = pd.DataFrame(results)
     #sns.set(rc={'figure.figsize':(11.7,20000000000)})
-    sns.catplot(x=g, y='Distribution', kind="bar", palette="ch:.25", data=df, height=5, aspect=2);
+    g = sns.catplot(x=g, y='Distribution', kind="bar", palette="ch:.25", data=df, height=5, aspect=2)
+    for ax in g.axes.flat:
+        ax.yaxis.set_major_formatter(PercentFormatter(all_count))
+    g.set(ylim=(0,all_count/10))
+    g.set(ylabel="Percent")
 
-
-
+    
 """
 
 names = []

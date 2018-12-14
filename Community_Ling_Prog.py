@@ -166,6 +166,7 @@ def progressiveness_wi_commun(k, snap_shots, comm_graph, graphlet_type,
             graphlet_leader_lp[graphlet_type][potential_leaders]['sum'] = 0.0
             graphlet_leader_lp[graphlet_type][potential_leaders]['count'] = 0
             graphlet_leader_lp[graphlet_type][potential_leaders]['avg'] = 0.0
+            graphlet_leader_lp[graphlet_type][potential_leaders]['list'] = []
     
     
     #--------------------------------------------------------------------------
@@ -206,23 +207,26 @@ def progressiveness_wi_commun(k, snap_shots, comm_graph, graphlet_type,
                     sentence = space.join(text)
                     posts_lp[post_key] = ling_prog(k, sentence, time, snap_shots)
                     
-                graphlet_lp[graphlet_type][graphlet_count]["LP"].append(posts_lp[post_key])
-                sum_LP += posts_lp[post_key]
-                count_LP +=1
+                if(posts_lp[post_key] != 0):
+                    graphlet_leader_lp[graphlet_type][number_of_leaders]['list'].append(posts_lp[post_key])
+                    graphlet_lp[graphlet_type][graphlet_count]["LP"].append(posts_lp[post_key])
+                    sum_LP += posts_lp[post_key]
+                    count_LP +=1
         
-        graphlet_lp[graphlet_type][graphlet_count]["LP_AVG"]= sum_LP/count_LP
-        LP_sum = LP_sum + graphlet_lp[graphlet_type][graphlet_count]["LP_AVG"]   
-        
-        if compute_leader == 1:
-            graphlet_leader_lp[graphlet_type][number_of_leaders]['sum'] += sum_LP
-            graphlet_leader_lp[graphlet_type][number_of_leaders]['count'] += count_LP
+        if(count_LP != 0):
+            graphlet_lp[graphlet_type][graphlet_count]["LP_AVG"]= sum_LP/count_LP
+            LP_sum = LP_sum + graphlet_lp[graphlet_type][graphlet_count]["LP_AVG"]   
+               
+            if compute_leader == 1:
+                graphlet_leader_lp[graphlet_type][number_of_leaders]['sum'] += sum_LP
+                graphlet_leader_lp[graphlet_type][number_of_leaders]['count'] += count_LP
         
     
     #--------------------------------------------------------------------------
     # calculate values we will return and pickle necessary files
     result_path = basepath + "Results/LP_Results/"+ commun + graphlet_type + "_LP"
     result_path_leader = basepath + "Results/LP_Results/"+ commun + graphlet_type + "_leader_LP"
-    leader_based_LP = None
+    leader_based_LP = NO_GRAPH_DATA
     
     
     if compute_leader == 1:
@@ -247,6 +251,7 @@ def progressiveness_wi_commun(k, snap_shots, comm_graph, graphlet_type,
         pickle.dump(graphlet_lp,out)
         
     regular_LP = NO_GRAPH_DATA
+    
     if len(graphlets) != 0:  
         regular_LP = LP_sum/len(graphlets)
    
@@ -297,8 +302,11 @@ if __name__ == "__main__":
                 LP_AVG_graphlet[g] = [0,0,0]
             
             if LP[0] != NO_GRAPH_DATA:
+                print('data found')
                 LP_AVG_graphlet[g][0] += 1 
                 LP_AVG_graphlet[g][1] += LP[0]
+            else:
+                print('data NOTfound')
                 
             # here we want to add the values we found from that function and add it to our specific graph
             if compute_leader == 1:
@@ -306,19 +314,19 @@ if __name__ == "__main__":
                     LP_AVG_leader[g] = {}
                     for number_of_leaders in range (0,5):
                         LP_AVG_leader[g][number_of_leaders] = {'count':0,'sum':0,'avg':0}
-                
-                
-                for number_of_leaders in range (0,5):
-                    if LP[1] != NO_GRAPH_DATA and LP[1][number_of_leaders] != NO_GRAPH_DATA:
-                        LP_AVG_leader[g][number_of_leaders]['count'] +=1
-                        LP_AVG_leader[g][number_of_leaders]['sum'] += LP[1][number_of_leaders]
+                       
+                if LP[1] != NO_GRAPH_DATA:
+                    for number_of_leaders in range (0,5):
+                        if LP[1] != NO_GRAPH_DATA and LP[1][number_of_leaders] != NO_GRAPH_DATA:
+                            LP_AVG_leader[g][number_of_leaders]['count'] +=1
+                            LP_AVG_leader[g][number_of_leaders]['sum'] += LP[1][number_of_leaders]
                         
         print("leader info calculated thus far")
         for g in graphlet_type:
             print(g,": ")
             for number_of_leaders in range (0,5):
                 print (LP_AVG_leader[g][number_of_leaders]['count'], LP_AVG_leader[g][number_of_leaders]['sum'])
-           
+                       
             
     #--------------------------------------------------------------------------
     # save and compute final results        

@@ -26,7 +26,7 @@ mapToDict = { "four_paths": {},
              }
 
 #------------------------------------------------------------------------------
-# returns average LP for a graphlet type in a given community 
+# counts the appearances within the dic
 #------------------------------------------------------------------------------
 def gatherLPFromComm(comm):
     print(comm)
@@ -43,6 +43,8 @@ def gatherLPFromComm(comm):
         for graphlet in graph[graphlet_type]:
             list_of_LPs = graph[graphlet_type][graphlet]['LP']
             for LP in list_of_LPs:
+                if LP == 0:
+                    continue
                 if LP not in  mapToDict[graphlet_type]:
                      mapToDict[graphlet_type][LP] = 0
                 mapToDict[graphlet_type][LP] +=1
